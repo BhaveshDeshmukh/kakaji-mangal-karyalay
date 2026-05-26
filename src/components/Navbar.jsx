@@ -68,14 +68,7 @@ function Navbar() {
           >
             Services
           </a>
-
-          <a
-            href="#gallery"
-            className="hover:text-gold transition duration-300"
-          >
-            Gallery
-          </a>
-
+          
           <a
             href="#footer"
             className="hover:text-gold transition duration-300"
