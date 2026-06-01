@@ -76,11 +76,11 @@ Additional Details:
 ${formData.details}
 `;
 
-    const whatsappURL =
-      "https://wa.me/919307929029?text="
-      encodeURIComponent(message);
+const whatsappURL = `https://wa.me/919307929029?text=${encodeURIComponent(
+  message
+)}`;
 
-    window.open(whatsappURL, "_blank");
+window.open(whatsappURL, "_blank");;
 
     alert("Booking inquiry sent successfully!");
 
