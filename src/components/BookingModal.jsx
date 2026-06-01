@@ -6,6 +6,14 @@ import "react-calendar/dist/Calendar.css";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 
+import { db } from "../firebase";
+
+import {
+  collection,
+  getDocs,
+  addDoc,
+} from "firebase/firestore";
+
 function BookingModal({ isOpen, setIsOpen }) {
 
   const [date, setDate] = useState(new Date());
@@ -22,12 +30,22 @@ function BookingModal({ isOpen, setIsOpen }) {
 
   useEffect(() => {
 
-    const storedDates =
-      JSON.parse(localStorage.getItem("bookedDates")) || [];
+  const fetchDates = async () => {
 
-    setBookedDates(storedDates);
+    const snapshot = await getDocs(
+      collection(db, "bookings")
+    );
 
-  }, []);
+    const dates = snapshot.docs.map(
+      (doc) => doc.data().date
+    );
+
+    setBookedDates(dates);
+  };
+
+  fetchDates();
+
+}, []);
 
   const formattedDate = format(date, "yyyy-MM-dd");
 
@@ -42,22 +60,28 @@ function BookingModal({ isOpen, setIsOpen }) {
 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    if (isBooked) return;
+  if (isBooked) return;
 
-    const updatedDates = [...bookedDates, formattedDate];
+  await addDoc(collection(db, "bookings"), {
+    date: formattedDate,
+    name: formData.name,
+    phone: formData.phone,
+    eventType: formData.eventType,
+    guests: formData.guests,
+    details: formData.details,
+    createdAt: new Date(),
+  });
 
-    setBookedDates(updatedDates);
+  setBookedDates([
+    ...bookedDates,
+    formattedDate,
+  ]);
 
-    localStorage.setItem(
-      "bookedDates",
-      JSON.stringify(updatedDates)
-    );
-
-    const message = `
+  const message = `
 Hello Kakaji Mangal Karyalay,
 
 I would like to book an event.
@@ -76,17 +100,15 @@ Additional Details:
 ${formData.details}
 `;
 
-const whatsappURL = `https://wa.me/919307929029?text=${encodeURIComponent(
-  message
-)}`;
+  const whatsappURL =
+    `https://wa.me/919307929029?text=${encodeURIComponent(message)}`;
 
-window.open(whatsappURL, "_blank");;
+  window.open(whatsappURL, "_blank");
 
-    alert("Booking inquiry sent successfully!");
+  alert("Booking inquiry sent successfully!");
 
-    setIsOpen(false);
-
-  };
+  setIsOpen(false);
+};
 
   if (!isOpen) return null;
 
