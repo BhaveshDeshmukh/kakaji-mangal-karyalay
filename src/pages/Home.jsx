@@ -10,6 +10,10 @@ import { motion } from "framer-motion";
 
 import Services from "../components/Services";
 
+import Testimonials from "../components/Testimonials";
+
+import Facilities from "../components/Facilities";
+
 function Home() {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -202,6 +206,10 @@ function Home() {
         </section>
 
         <Services />
+
+        <Facilities />
+
+        <Testimonials />
 
         <Footer />
 

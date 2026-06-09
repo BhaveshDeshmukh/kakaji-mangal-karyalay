@@ -1,13 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
-
-import AdminPanel from "./components/AdminPanel";
-
 import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function ProtectedRoute({ children }) {
-
   const isLoggedIn =
     localStorage.getItem("adminLoggedIn");
 
@@ -17,7 +14,6 @@ function ProtectedRoute({ children }) {
 }
 
 function App() {
-
   return (
     <BrowserRouter>
 
@@ -38,7 +34,7 @@ function App() {
           element={
             <ProtectedRoute>
 
-              <AdminPanel />
+              <AdminDashboard />
 
             </ProtectedRoute>
           }

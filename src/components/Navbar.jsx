@@ -1,21 +1,16 @@
 import { useState } from "react";
-
 import { HiMenuAlt3, HiX } from "react-icons/hi";
-
 import logo from "../assets/logo.png";
 
 function Navbar() {
-
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-
     <nav className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-[#5A0E0E]/95 to-[#3B0909]/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.35)] border-b border-gold/10">
 
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 md:px-12 py-1">
 
         <a href="#home">
-
           <div className="flex items-center gap-4 cursor-pointer">
 
             <div className="relative flex items-center justify-center">
@@ -43,7 +38,6 @@ function Navbar() {
             </div>
 
           </div>
-
         </a>
 
         <div className="hidden md:flex items-center gap-8 text-cream text-xs uppercase tracking-[3px] font-medium">
@@ -68,7 +62,14 @@ function Navbar() {
           >
             Services
           </a>
-          
+
+          <a
+            href="#facilities"
+            className="hover:text-gold transition duration-300"
+          >
+            Facilities
+          </a>
+
           <a
             href="#footer"
             className="hover:text-gold transition duration-300"
@@ -82,9 +83,7 @@ function Navbar() {
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden text-gold text-3xl"
         >
-
           {menuOpen ? <HiX /> : <HiMenuAlt3 />}
-
         </button>
 
       </div>
@@ -118,6 +117,14 @@ function Navbar() {
           </a>
 
           <a
+            href="#facilities"
+            onClick={() => setMenuOpen(false)}
+            className="hover:text-gold transition duration-300"
+          >
+            Facilities
+          </a>
+
+          <a
             href="#gallery"
             onClick={() => setMenuOpen(false)}
             className="hover:text-gold transition duration-300"
@@ -138,7 +145,6 @@ function Navbar() {
       )}
 
     </nav>
-
   );
 }
 

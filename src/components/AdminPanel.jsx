@@ -1,45 +1,46 @@
 import { useEffect, useState } from "react";
+import { db } from "../firebase";
+
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc
+} from "firebase/firestore";
 
 function AdminPanel() {
 
-  const [bookedDates, setBookedDates] = useState([]);
+  const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
+  const fetchBookings = async () => {
 
-    const storedDates =
-      JSON.parse(localStorage.getItem("bookedDates")) || [];
-
-    setBookedDates(storedDates);
-
-  }, []);
-
-  const removeDate = (dateToRemove) => {
-
-    const updatedDates = bookedDates.filter(
-      (date) => date !== dateToRemove
+    const querySnapshot = await getDocs(
+      collection(db, "bookings")
     );
 
-    setBookedDates(updatedDates);
+    const bookingData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
-    localStorage.setItem(
-      "bookedDates",
-      JSON.stringify(updatedDates)
-    );
-
+    setBookings(bookingData);
   };
 
-  const clearAllBookings = () => {
+  useEffect(() => {
+    fetchBookings();
+  }, []);
 
-    localStorage.removeItem("bookedDates");
+  const removeBooking = async (id) => {
 
-    setBookedDates([]);
+    await deleteDoc(doc(db, "bookings", id));
 
+    fetchBookings();
   };
 
   return (
     <section className="min-h-screen bg-ivory py-32 px-6 md:px-16">
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         <div className="text-center mb-20">
 
@@ -52,65 +53,87 @@ function AdminPanel() {
           </h1>
 
           <p className="text-brown text-lg leading-9 max-w-3xl mx-auto">
-            Manage reserved dates, remove unavailable bookings,
-            and monitor venue reservations professionally.
+            View all booking requests received from customers.
           </p>
 
         </div>
 
         <div className="bg-white rounded-[40px] shadow-2xl p-10 md:p-14">
 
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+          <h2 className="text-3xl font-bold text-maroon mb-10">
+            Customer Bookings
+          </h2>
 
-            <h2 className="text-3xl font-bold text-maroon">
-              Reserved Dates
-            </h2>
-
-            <button
-              onClick={clearAllBookings}
-              className="bg-red-700 text-white px-8 py-4 rounded-full hover:bg-red-800 transition duration-300 font-semibold shadow-lg"
-            >
-              Clear All Bookings
-            </button>
-
-          </div>
-
-          {bookedDates.length === 0 ? (
+          {bookings.length === 0 ? (
 
             <div className="bg-green-100 border border-green-400 text-green-700 px-8 py-6 rounded-3xl text-lg">
-
-              ✅ No booked dates currently available.
-
+              No bookings found.
             </div>
 
           ) : (
 
-            <div className="space-y-6">
+            <div className="space-y-8">
 
-              {bookedDates.map((date, index) => (
+              {bookings.map((booking) => (
 
                 <div
-                  key={index}
-                  className="bg-cream border border-gold rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-lg"
+                  key={booking.id}
+                  className="bg-cream border border-gold rounded-3xl p-8 shadow-lg"
                 >
 
-                  <div>
+                  <div className="grid md:grid-cols-2 gap-6">
 
-                    <h3 className="text-2xl font-bold text-maroon mb-2">
-                      Reserved Date
-                    </h3>
+                    <div>
+                      <h3 className="font-bold text-maroon">
+                        Customer Name
+                      </h3>
+                      <p>{booking.name}</p>
+                    </div>
 
-                    <p className="text-brown text-lg">
-                      {date}
-                    </p>
+                    <div>
+                      <h3 className="font-bold text-maroon">
+                        Phone Number
+                      </h3>
+                      <p>{booking.phone}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-maroon">
+                        Event Type
+                      </h3>
+                      <p>{booking.eventType}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-maroon">
+                        Guest Count
+                      </h3>
+                      <p>{booking.guests}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-maroon">
+                        Event Date
+                      </h3>
+                      <p>{booking.date}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-maroon">
+                        Additional Details
+                      </h3>
+                      <p>{booking.details}</p>
+                    </div>
 
                   </div>
 
                   <button
-                    onClick={() => removeDate(date)}
-                    className="bg-maroon text-cream px-8 py-3 rounded-full hover:bg-[#5A1111] transition duration-300 font-semibold"
+                    onClick={() =>
+                      removeBooking(booking.id)
+                    }
+                    className="mt-8 bg-red-700 text-white px-6 py-3 rounded-full hover:bg-red-800 transition"
                   >
-                    Remove Booking
+                    Delete Booking
                   </button>
 
                 </div>

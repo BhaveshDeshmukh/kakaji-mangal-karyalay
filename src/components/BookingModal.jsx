@@ -10,8 +10,9 @@ import { db } from "../firebase";
 
 import {
   collection,
-  getDocs,
   addDoc,
+  getDocs,
+  serverTimestamp
 } from "firebase/firestore";
 
 function BookingModal({ isOpen, setIsOpen }) {
@@ -202,6 +203,7 @@ ${formData.details}
               <option>Reception</option>
               <option>Birthday</option>
               <option>Corporate Event</option>
+              <option>Haldi</option>
 
             </select>
 
